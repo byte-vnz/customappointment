@@ -1,0 +1,25 @@
+#qr_code_container {
+    padding-top: 0px;
+    position: relative;
+    height: 200px;
+    width: 150%;
+}
+
+#qr_code_container img {
+    width: auto;
+    height: auto;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.labelhld {
+    font-size: 12px;
+    font-weight: bold;
+    
+    display: block;
+    
+   
+     
+}

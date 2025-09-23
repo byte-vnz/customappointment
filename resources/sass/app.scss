@@ -1,0 +1,75 @@
+// Custom
+@import 'custom';
+
+@import '~daterangepicker/daterangepicker.css';
+
+html, body {
+    height: 100%;
+    // overflow-x: hidden;
+}
+
+label, p {
+    font-size: 14px;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+// form inputs ================================
+.form-control:focus, .form-control-plaintext:focus{
+    border-color: #1e7e34;
+    box-shadow: 0 0 0 0.2rem #28a7454d;
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.form-control {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0 10px;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.42);
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.42);
+}
+
+.input-group-text {
+    border-bottom-left-radius: 0;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.54);
+}
+// form inputs end ============================
+
+@media (max-width: 575.98px) {
+
+    label#adate-label {
+        display: block !important;
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+    div.div-sm-100 {
+        width: 100% !important;
+
+        input.form-control {
+            display: block !important;
+            width: 100% !important;
+        }
+    }
+}
+
+.f-c-border {
+    border: 1px solid #ced4da
+}
+
