@@ -17,7 +17,7 @@ const pull_slots = (date, time) => {
         'headers': {
             'X-CSRF-TOKEN': xheader,
         },
-        'beforeSend': function () {
+        'beforeSend': function() {
             $('.form-control').removeClass('is-invalid');
             loader.removeClass('d-none');
 
@@ -94,7 +94,7 @@ const pullWalkInAvaiableSlots = (departmentid, transaction_type_id, bin, adate, 
         'headers': {
             'X-CSRF-TOKEN': xheader,
         },
-        'beforeSend': function () {
+        'beforeSend': function() {
             $('.form-control').removeClass('is-invalid');
             loader.removeClass('d-none');
 
@@ -145,9 +145,9 @@ const pullWalkInAvaiableSlots = (departmentid, transaction_type_id, bin, adate, 
 }
 
 
-$(document).ready(function (e) {
+$(document).ready(function(e) {
 
-    $('body').on('change', '#atime', function (e) {
+    $('body').on('change', '#atime', function(e) {
         let date_val = $('#adate').val(),
             time_val = $(this).val();
 
@@ -155,7 +155,7 @@ $(document).ready(function (e) {
 
     });
 
-    $('body').on('input', '#adate', function (e) {
+    $('body').on('input', '#adate', function(e) {
         let date_val = $(this).val(),
             time_val = $('#atime').val();
 
@@ -163,7 +163,7 @@ $(document).ready(function (e) {
 
     });
 
-    $('body').on('submit', '#master-form', function (e) {
+    $('body').on('submit', '#master-form', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -206,7 +206,7 @@ $(document).ready(function (e) {
                 'headers': {
                     'X-CSRF-TOKEN': xheader,
                 },
-                'beforeSend': function () {
+                'beforeSend': function() {
                     $('.form-control').removeClass('is-invalid');
                     a_box.addClass('d-none');
                     loader.removeClass('d-none');
@@ -235,15 +235,15 @@ $(document).ready(function (e) {
                         $('.aptrefno').text(data.ref_no);
                         $('.aptadate').text(data.adate);
                         $('.aptatime').text(data.atime.split('-')[0].trim());
-                       // $('.aptatime').text(data.atime);
+                        // $('.aptatime').text(data.atime);
                         $('.apttrans').text(data.trans);
                         //$('.aptbusname').text(data.bus_name);
                         //$('.aptbin').text(data.bin);
                         $('.apteid').text(data.eid);
                         $("#modal-qr-img").attr('src', data.qr_url);
-                        
+
                         $('#as-modal').modal('show');
-						$('#master-form')[0].reset();
+                        $('#master-form')[0].reset();
                     }
                 },
                 'error': (err) => {
@@ -300,7 +300,7 @@ $(document).ready(function (e) {
 
     let ref_val = 0;
 
-    $('body').on('click', '#cancel-find-info', function (e) {
+    $('body').on('click', '#cancel-find-info', function(e) {
         let ref_inp = $('#reference_code');
 
         ref_val = ref_inp.val().trim();
@@ -319,11 +319,11 @@ $(document).ready(function (e) {
             $.ajax({
                 'url': 'search-info',
                 'type': 'post',
-                'data': {'reference_code': ref_val},
+                'data': { 'reference_code': ref_val },
                 'headers': {
                     'X-CSRF-TOKEN': xheader,
                 },
-                'beforeSend': function () {
+                'beforeSend': function() {
                     ref_inp.removeClass('is-invalid');
                     loader.removeClass('d-none');
                     a_box.addClass('d-none');
@@ -388,78 +388,115 @@ $(document).ready(function (e) {
 
     });
 
-    $('body').on('click', '#submit-cancel', function (e) {
+    $('body').on('click', '#submit-cancel', function(e) {
+        e.preventDefault();
+        console.log("✅ Button clicked"); // check if this shows in console
+
         let a_box = $('#alert-box-form'),
             loader = $('#submit-cancel-spiner'),
             $_this = $(this);
 
-            $.ajax({
-                'url': 'cancel',
-                'type': 'post',
-                'data': {'reference_code': ref_val},
-                'headers': {
-                    'X-CSRF-TOKEN': xheader,
-                },
-                'beforeSend': function () {
-                    loader.removeClass('d-none');
+        $.ajax({
+            'url': 'cancel',
+            'type': 'post',
+            'data': { 'reference_code': ref_val },
+            'headers': {
+                'X-CSRF-TOKEN': xheader,
+            },
+            'beforeSend': function() {
+                loader.removeClass('d-none');
 
-                },
-                'complete': () => {
-                    loader.addClass('d-none');
+            },
+            'complete': () => {
+                loader.addClass('d-none');
 
-                },
-                'success': (data) => {
+            },
+            'success': (data) => {
 
-                    if (data.error) {
-                        a_box.removeClass('alert-success d-none').addClass('alert-danger').text(data.message);
+                if (data.error) {
+                    a_box.removeClass('alert-success d-none').addClass('alert-danger').text(data.message);
 
-                    } else {
-                        a_box.removeClass('alert-danger d-none').addClass('alert-success').text(data.message);
+                } else {
+                    a_box.removeClass('alert-danger d-none').addClass('alert-success').text(data.message);
 
-                    }
-
-                    $_this.attr('disabled', true);
-                },
-                'error': (err) => {
-                    var err_msg,
-                        err_json = err.responseJSON;
-
-                    switch (err.status) {
-                        case 422:
-                            let err_data = err_json.errors;
-
-                            err_msg = err_json.message;
-
-                            // console.log(err_data);
-
-                            for (var _key in err_data) {
-
-                                $('#' + _key).addClass('is-invalid').next().text(err_data[_key][0]);
-
-                            }
-
-                            break;
-
-                        case 404:
-                            err_msg = err.statusText;
-                            break;
-
-                        case 500:
-                            err_msg = "Oops! There's something wrong.";
-                            break;
-                    }
-
-                    $(a_box).removeClass('alert-success d-none').addClass('alert-danger').text(err_msg);
                 }
 
-            });
+                $_this.attr('disabled', true);
+            },
+            'error': (err) => {
+                var err_msg,
+                    err_json = err.responseJSON;
+
+                switch (err.status) {
+                    case 422:
+                        let err_data = err_json.errors;
+
+                        err_msg = err_json.message;
+
+                        // console.log(err_data);
+
+                        for (var _key in err_data) {
+
+                            $('#' + _key).addClass('is-invalid').next().text(err_data[_key][0]);
+
+                        }
+
+                        break;
+
+                    case 404:
+                        err_msg = err.statusText;
+                        break;
+
+                    case 500:
+                        err_msg = "Oops! There's something wrong.";
+                        break;
+                }
+
+                $(a_box).removeClass('alert-success d-none').addClass('alert-danger').text(err_msg);
+            }
+
+        });
 
 
     });
 
+    // submit start accept
+    $('body').on('click', '#submit-accept', function(e) {
+        e.preventDefault();
+
+        let ref_val = $('#reference_codes').val(); // <-- make sure your input has this ID
+
+        if (!ref_val) {
+            alert("Reference code is required");
+            return;
+        }
+
+        $.ajax({
+            url: acceptUrl,
+            type: "POST",
+            data: {
+                reference_code: $('#reference_codes').val(),
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                alert(data.message);
+
+                if (!data.error) {
+                    window.location.href = slotViewerUrl; // ✅ this will now be correct
+                }
+            },
+            error: function(xhr) {
+                console.error("❌ AJAX Error:", xhr.responseText);
+            }
+        });
+    });
+
+    // submit end accept
+
+
 
     // health dec submit form
-    $('body').on('submit', '#health-mainfrm', function (e) {
+    $('body').on('submit', '#health-mainfrm', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -494,7 +531,7 @@ $(document).ready(function (e) {
                 'headers': {
                     'X-CSRF-TOKEN': xheader,
                 },
-                'beforeSend': function () {
+                'beforeSend': function() {
                     $('.form-control').removeClass('is-invalid');
                     a_box.addClass('d-none');
                     loader.removeClass('d-none');
@@ -584,7 +621,7 @@ $(document).ready(function (e) {
 
 
 
-    $('body').on('change', '#departmentid', function () {
+    $('body').on('change', '#departmentid', function() {
         let departmentId = $(this).val();
 
         const transaction_elem = $('#transaction_type_id'),
@@ -595,7 +632,7 @@ $(document).ready(function (e) {
 
         // show alert if any
         $('.department-alert-active').addClass('d-none').removeClass('.department-alert-active');
-        $('.department-alert[data-alert-id='+ departmentId +']').addClass('.department-alert-active').removeClass('d-none');
+        $('.department-alert[data-alert-id=' + departmentId + ']').addClass('.department-alert-active').removeClass('d-none');
         // show alert if any end
 
         $.ajax({
@@ -609,7 +646,7 @@ $(document).ready(function (e) {
                 tran_spiner.addClass('d-none');
 
             },
-            success:function (response) {
+            success: function(response) {
                 var len = response.results.length;
                 //$("#transaction_type_id").empty();
                 //$("#transaction_type_id").append("<option value='-1' selected disabled>-- PLEASE SELECT LOCATION --</option>");
@@ -625,6 +662,18 @@ $(document).ready(function (e) {
         });
     });
 
+    $('#cancel-find-infos').on('click', function(e) {
+        e.preventDefault();
+
+        let refCode = $('#reference_codes').val().trim();
+
+        if (refCode === "") {
+            alert("Please enter a reference code before searching.");
+            return false;
+        }
+
+        window.open(verificationUrl + "/" + refCode, "_self");
+    });
 
     // Biz Name Finder
 
@@ -706,7 +755,7 @@ $(document).ready(function (e) {
 
 
     // Walk-In Pull Slots
-    $('body').on('change', '#walk_in_atime', function (e) {
+    $('body').on('change', '#walk_in_atime', function(e) {
         let walk_in_adate = $('#walk_in_adate').val(),
             walk_in_atime = $(this).val(),
             walk_in_departmentid = $('#departmentid').val(),
@@ -716,7 +765,7 @@ $(document).ready(function (e) {
         pullWalkInAvaiableSlots(walk_in_departmentid, walk_in_transaction_type_id, walk_in_bin, walk_in_adate, walk_in_atime);
     });
 
-    $('body').on('input', '#walk_in_adate', function (e) {
+    $('body').on('input', '#walk_in_adate', function(e) {
         let walk_in_adate = $(this).val(),
             walk_in_atime = $('#walk_in_atime').val(),
             walk_in_departmentid = $('#departmentid').val(),
@@ -726,7 +775,7 @@ $(document).ready(function (e) {
         pullWalkInAvaiableSlots(walk_in_departmentid, walk_in_transaction_type_id, walk_in_bin, walk_in_adate, walk_in_atime);
     });
 
-//Transaction Type Rules
+    //Transaction Type Rules
     $('body').on('change', '#transaction_type_id', function(e) {
         const selected_val = $(this).val();
 
@@ -749,13 +798,6 @@ $(document).ready(function (e) {
 });
 
 // Daterangepicker
-$('.use-daterangepicker').each(function () {
+$('.use-daterangepicker').each(function() {
     $(this).daterangepicker();
 });
-
-
-
-   
- 
-
-

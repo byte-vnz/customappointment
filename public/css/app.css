@@ -408,6 +408,7 @@
     clear: none !important;
   }
 }
+
 #qr_code_container {
   padding-top: 0px;
   position: relative;
@@ -425,7 +426,7 @@
 }
 
 .labelhld {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   display: block;
 }
@@ -486,18 +487,20 @@ p {
     width: 100% !important;
     margin-right: 0 !important;
   }
-
   div.div-sm-100 {
     width: 100% !important;
   }
-
   div.div-sm-100 input.form-control {
     display: block !important;
     width: 100% !important;
   }
 }
-
 .f-c-border {
   border: 1px solid #ced4da;
 }
 
+.labelhld {
+  font-size: 11px;
+  font-weight: bold;
+  display: block;
+}

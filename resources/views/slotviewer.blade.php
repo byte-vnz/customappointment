@@ -4,6 +4,28 @@
 <div class="card mt-4">
     <div class="card-header">
         <h5 class=""><i class="fas fa-globe-asia mr-2"></i>City Government of Parañaque Scheduled Appointment</h5>
+
+
+        <label for="adate"> SELECT DATE:</label>
+        <input type="date" name="sdate" id="sdate" value="{{ date('Y-m-d') }}">
+        <div class="form-group">
+            <label for="reference_code">REFERENCE CODE OR BIN</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="reference_codes" name="reference_codes" placeholder="">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="cancel-find-infos">
+                        <i class="fas fa-search mr-2"></i>
+                        Search
+                        <span class="spinner-border spinner-border-sm ml-3 d-none" id="search-spiner" role="status"
+                            aria-hidden="true"></span>
+                        <span class="sr-only">Loading...</span>
+                    </button>
+                </div>
+            </div>
+            <div class="invalid-feedback">Please provide a reference code or BIN.</div>
+            <small class="form-text text-muted">Input your reference code or BIN.</small>
+        </div>
+
     </div>
     <div class="card-body">
 
@@ -17,9 +39,6 @@
                     <span class="badge badge-primary badge-pill"> <strong>{{ $detail->Total   }}</strong></span>
                 </li>
 
-
-
-
                 @endforeach
 
             </h1>
@@ -27,9 +46,24 @@
 
     </div>
 </div>
-<script>
-window.setTimeout(function() {
-    window.location.reload();
-}, 5000);
-</script>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="aptmodals">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 @endsection

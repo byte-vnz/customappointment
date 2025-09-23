@@ -1,14 +1,14 @@
 // Custom
 @import 'custom';
-
 @import '~daterangepicker/daterangepicker.css';
-
-html, body {
+html,
+body {
     height: 100%;
     // overflow-x: hidden;
 }
 
-label, p {
+label,
+p {
     font-size: 14px;
 }
 
@@ -18,7 +18,8 @@ label, p {
 }
 
 // form inputs ================================
-.form-control:focus, .form-control-plaintext:focus{
+.form-control:focus,
+.form-control-plaintext:focus {
     border-color: #1e7e34;
     box-shadow: 0 0 0 0.2rem #28a7454d;
     background-color: transparent;
@@ -36,7 +37,8 @@ label, p {
     padding: 0 10px;
 }
 
-.form-control:disabled, .form-control[readonly] {
+.form-control:disabled,
+.form-control[readonly] {
     background-color: transparent;
     color: rgba(0, 0, 0, 0.42);
     border-bottom: 1px dotted rgba(0, 0, 0, 0.42);
@@ -50,10 +52,9 @@ label, p {
     background-color: transparent;
     color: rgba(0, 0, 0, 0.54);
 }
+
 // form inputs end ============================
-
 @media (max-width: 575.98px) {
-
     label#adate-label {
         display: block !important;
         width: 100% !important;
@@ -61,7 +62,6 @@ label, p {
     }
     div.div-sm-100 {
         width: 100% !important;
-
         input.form-control {
             display: block !important;
             width: 100% !important;
@@ -73,3 +73,8 @@ label, p {
     border: 1px solid #ced4da
 }
 
+.labelhld {
+    font-size: 11px;
+    font-weight: bold;
+    display: block;
+}

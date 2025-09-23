@@ -445,6 +445,29 @@ class Appointment extends Controller
     }
 
 
+    public function acceptappt(Request $req)
+    {
+        /*   $req->validate([
+               'reference_code' => ['required', 'alpha_num', 'exists:appmstr,refno'],
+           ]);
+    */
+        $info = $this->_model_appoint->select('appstatus')->where('refno', $req->get('reference_code'))->first();
+
+        if ($info->appstatus == 4) {
+            $response = ['error' => true, 'message' => "This appointment information has already been accepted "];
+        } else {
+            $update = $this->_model_appoint->where('refno', $req->get('reference_code'))->update(['appstatus' => 4]);
+
+            if ($update) {
+                $response = ['error' => false, 'message' => 'This appointment information is now accepted.'];
+            } else {
+                $response = $update;
+            }
+        }
+
+        return response()->json($response);
+    }
+
 
     /**
      * View Appointment QR Code

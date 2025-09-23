@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Configuration;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers;
+
 use App\Http\Requests\SettingRequest;
 use App\Helpers\SettingHelper;
 

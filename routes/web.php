@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Appointment;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,7 @@ Route::get('slotviewer', 'Appointment@indexslotview');
 
 Route::post('search-info', 'Appointment@appointInfo');
 Route::post('cancel', 'Appointment@cancel');
+Route::post('/accept', [Appointment::class, 'acceptappt'])->name('accept');
 Route::get('attachment/{id}', 'Appointment@viewQRCode')->name('appointment.attachment');
 Route::get('verification/{refno}', 'Appointment@verification')->name('appointment.verification');
 
