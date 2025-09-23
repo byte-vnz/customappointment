@@ -422,7 +422,7 @@ class AppointmentTable extends Model
 
     public function showCountToday()
     {
-        $q = $this->selectRaw('(54 - count(*)) as Total')->addSelect('timeslotid', 'atime')->whereDate('adate', today())->where(['iscancel' => 0, 'transaction_type_id' => 1])->groupBy('timeslotid', 'atime')->get();
+        $q = $this->selectRaw('( count(*)) as Total')->addSelect('timeslotid', 'atime')->whereDate('adate', today())->where(['iscancel' => 0, 'transaction_type_id' => 13])->groupBy('timeslotid', 'atime')->get();
 
         return $q;
     }
