@@ -30,8 +30,8 @@
                 <div class="{{ $scheduleIndicator }} card-header text-white text-center">
                     <h5 class=""><i class="fas fa-globe-asia mr-2"></i>{{ config('app.name', 'Appointment') }} Schedule
                     </h5>
-                    <h6 class="card-subtitle mt-3">{{ date('M. d, Y', strtotime($appointment->adate)) }}
-                        ({{ $appointment->atime }})</h6>
+                    <h6 class="card-subtitle mt-4">
+                    </h6>
                 </div>
 
 
@@ -71,7 +71,22 @@
                         </div>
                     </div>
 
-                    <div class="card-footer text-muted">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="card-text">DATE: </h6>
+                            <h5 class="card-title">{{ date('M. d, Y', strtotime($appointment->adate)) }} </h5>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="card-text">TIME: </h6>
+                            <h5 class="card-title">{{ trim(explode('-', $appointment->atime)[0]) }}</h5>
+                        </div>
+                    </div>
+
+                    <div class="card-footer text-muted mb-2">
                         @if($isExpire)
                         <div class="row text-center">
                             <div class="col-md-12 col-12 text-danger text-center">YOUR SCHEDULE IS ALREADY CANCELLED OR

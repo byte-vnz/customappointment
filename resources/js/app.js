@@ -820,9 +820,9 @@ $('#sdate').on('change', function() {
                 $.each(data.count, function(index, detail) {
                     list.append(`
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                ${detail.atime.split('-')[0].trim()}
+                               <h4> ${detail.atime.split('-')[0].trim()}</h4>
                                 <span class="badge badge-primary badge-pill">
-                                    <strong>${detail.Total}</strong>
+                                   <h4> <strong>${detail.Total}</strong></h4>
                                 </span>
                             </li>
                         `);
