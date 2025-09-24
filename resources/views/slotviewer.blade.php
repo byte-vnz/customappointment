@@ -4,7 +4,9 @@
 <div class="card mt-4">
     <div class="card-header">
         <h5 class=""><i class="fas fa-globe-asia mr-2"></i>City Government of Parañaque Scheduled Appointment</h5>
-
+        @foreach($location as $loc)
+        <h2>{{ $loc->name }}</h2>
+        @endforeach
 
         <label for="adate"> SELECT DATE:</label>
         <input type="date" name="sdate" id="sdate" value="{{ date('Y-m-d') }}">
@@ -32,9 +34,9 @@
         <ul class="list-group" id="slot-list">
             @foreach($count as $detail)
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ trim(explode('-', $detail->atime)[0]) }}
+                <h4> {{ trim(explode('-', $detail->atime)[0]) }} </h4>
                 <span class="badge badge-primary badge-pill">
-                    <strong>{{ $detail->Total }}</strong>
+                    <h4><strong>{{ $detail->Total }}</strong></h4>
                 </span>
             </li>
             @endforeach

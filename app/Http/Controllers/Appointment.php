@@ -407,7 +407,7 @@ class Appointment extends Controller
         $date = $request->input('sdate', date('Y-m-d'));
 
         $q = (new AppointmentTable)->showCount($date);
-
+        $l =  TransactionType::where('id', 13)->get();
         
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['count' => $q]);
@@ -416,6 +416,7 @@ class Appointment extends Controller
         return view('slotviewer', [
             'count' => $q,
             'date'  => $date,
+            'location' => $l
         ]);
     }
 
