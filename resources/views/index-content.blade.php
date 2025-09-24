@@ -363,10 +363,15 @@
                     </div>
 
 
-                    <div class="row mb-2 mt-2">
-
+                    <div class="row mb-2 mt-2 ">
+                        <div class="col-md-12 text-center">
+                            <a href="{{ route('download', ['filename' => 'HELP-FORM-v2.3.pdf']) }}">Click Here to
+                                download
+                                your HELP Form</a>
+                        </div>
 
                     </div>
+
                     <div class="row mt-1">
                         <div class="col-md-12">
 

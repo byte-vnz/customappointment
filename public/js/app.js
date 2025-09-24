@@ -638,6 +638,31 @@ $(document).ready(function (e) {
 $('.use-daterangepicker').each(function () {
   $(this).daterangepicker();
 });
+$('#sdate').on('change', function () {
+  var date = $(this).val();
+  $.ajax({
+    url: window.slotviewerUrl,
+    type: 'GET',
+    data: {
+      sdate: date
+    },
+    dataType: 'json',
+    success: function success(data) {
+      var list = $('#slot-list');
+      list.empty();
+      if (data.count.length > 0) {
+        $.each(data.count, function (index, detail) {
+          list.append("\n                            <li class=\"list-group-item d-flex justify-content-between align-items-center\">\n                                ".concat(detail.atime.split('-')[0].trim(), "\n                                <span class=\"badge badge-primary badge-pill\">\n                                    <strong>").concat(detail.Total, "</strong>\n                                </span>\n                            </li>\n                        "));
+        });
+      } else {
+        list.append("<li class=\"list-group-item\">No appointments found</li>");
+      }
+    },
+    error: function error(xhr, status, _error) {
+      console.error('Error:', _error);
+    }
+  });
+});
 
 /***/ }),
 

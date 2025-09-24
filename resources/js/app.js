@@ -801,3 +801,38 @@ $(document).ready(function(e) {
 $('.use-daterangepicker').each(function() {
     $(this).daterangepicker();
 });
+
+$('#sdate').on('change', function() {
+    let date = $(this).val();
+
+    $.ajax({
+
+        url: window.slotviewerUrl,
+        type: 'GET',
+        data: { sdate: date },
+        dataType: 'json',
+        success: function(data) {
+
+            let list = $('#slot-list');
+            list.empty();
+
+            if (data.count.length > 0) {
+                $.each(data.count, function(index, detail) {
+                    list.append(`
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                ${detail.atime.split('-')[0].trim()}
+                                <span class="badge badge-primary badge-pill">
+                                    <strong>${detail.Total}</strong>
+                                </span>
+                            </li>
+                        `);
+                });
+            } else {
+                list.append(`<li class="list-group-item">No appointments found</li>`);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+});

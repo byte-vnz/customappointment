@@ -431,6 +431,13 @@
   display: block;
 }
 
+.rc_lbl {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  font-size: 15px;
+}
+
 html,
 body {
   height: 100%;

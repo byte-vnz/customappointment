@@ -41,9 +41,9 @@
 
                         <div class="col-md-12">
                             <h6 class="card-text">REFERENCE NUMBER: </h6>
-                            <h4 class=" card-title ">{{ $appointment->refno }} </h4>
-                            <input type="text" id="reference_codes" name="reference_code"
-                                value="{{ $appointment->refno }}">
+
+                            <input class="rc_lbl" type="text" id="reference_codes" name="reference_code"
+                                value="{{ $appointment->refno }}" readonly>
                         </div>
 
                     </div>

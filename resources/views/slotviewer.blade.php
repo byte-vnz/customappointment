@@ -9,7 +9,7 @@
         <label for="adate"> SELECT DATE:</label>
         <input type="date" name="sdate" id="sdate" value="{{ date('Y-m-d') }}">
         <div class="form-group">
-            <label for="reference_code">REFERENCE CODE OR BIN</label>
+            <label for="reference_code">REFERENCE CODE</label>
             <div class="input-group">
                 <input type="text" class="form-control" id="reference_codes" name="reference_codes" placeholder="">
                 <div class="input-group-append">
@@ -22,26 +22,22 @@
                     </button>
                 </div>
             </div>
-            <div class="invalid-feedback">Please provide a reference code or BIN.</div>
-            <small class="form-text text-muted">Input your reference code or BIN.</small>
+            <div class="invalid-feedback">Please provide a reference code</div>
+            <small class="form-text text-muted">Input your reference code</small>
         </div>
 
     </div>
     <div class="card-body">
 
-        <ul class="list-group">
-            <h1>
-
-                @foreach($count as $detail)
-
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ trim(explode('-', $detail->atime)[0]) }}
-                    <span class="badge badge-primary badge-pill"> <strong>{{ $detail->Total   }}</strong></span>
-                </li>
-
-                @endforeach
-
-            </h1>
+        <ul class="list-group" id="slot-list">
+            @foreach($count as $detail)
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ trim(explode('-', $detail->atime)[0]) }}
+                <span class="badge badge-primary badge-pill">
+                    <strong>{{ $detail->Total }}</strong>
+                </span>
+            </li>
+            @endforeach
         </ul>
 
     </div>

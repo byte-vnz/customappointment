@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Appointment;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,13 +23,20 @@ Route::get('settings', 'SettingController@index');
 Route::post('save', 'Appointment@save');
 Route::get('cancellation', 'Appointment@indexCancel');
 Route::get('qrverify', 'Appointment@indexdverify');
-Route::get('slotviewer', 'Appointment@indexslotview');
+//Route::get('slotviewer', 'Appointment@indexslotview');
+Route::get('/slotviewer', 'Appointment@lvslotview')->name('slotviewer');
 
 Route::post('search-info', 'Appointment@appointInfo');
 Route::post('cancel', 'Appointment@cancel');
 Route::post('/accept', [Appointment::class, 'acceptappt'])->name('accept');
 Route::get('attachment/{id}', 'Appointment@viewQRCode')->name('appointment.attachment');
 Route::get('verification/{refno}', 'Appointment@verification')->name('appointment.verification');
+
+Route::get('/download/{filename}', function ($filename) {
+    $path = storage_path('app/public/' . $filename);
+    return response()->download($path);
+})->name('download');
+
 
 // Walk-In Appointment
 Route::group(['prefix' => '/30c234cc35caba164c8dbd3837a0c55a'], function () {

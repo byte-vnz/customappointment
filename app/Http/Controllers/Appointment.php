@@ -402,6 +402,23 @@ class Appointment extends Controller
         return view('slotviewer', ['count' => $q]);
     }
 
+    public function lvslotview(Request $request)
+    {
+        $date = $request->input('sdate', date('Y-m-d'));
+
+        $q = (new AppointmentTable)->showCount($date);
+
+        
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['count' => $q]);
+        }
+
+        return view('slotviewer', [
+            'count' => $q,
+            'date'  => $date,
+        ]);
+    }
+
     public function appointInfo(Request $req)
     {
         /*
