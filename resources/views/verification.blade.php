@@ -114,10 +114,10 @@
 
 						</div>
 					</dl>
-                        <!--
+                        
 						<dl class="row">
 							<span> BIN: </span> {{ $appointment->bin }}
-                           <!-- <dt class="col-md-6 col-4  binlbl ">BIN: </dt><dd class="col-md-6 col-8">{{ $appointment->bin }}</dd>
+                          <dt class="col-md-6 col-4  binlbl ">BIN: </dt><dd class="col-md-6 col-8">{{ $appointment->bin }}</dd>
 
 						</dl>
 
