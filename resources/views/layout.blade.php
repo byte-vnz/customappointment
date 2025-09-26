@@ -52,14 +52,18 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
     </script>
 
+
     <script>
     var verificationUrl = "{{ url('/verification') }}";
-    </script>
-    <script>
     window.slotviewerUrl = "{{ route('slotviewer') }}";
     const acceptUrl = "{{ url('accept') }}";
     const slotViewerUrl = "{{ url('/slotviewer') }}";
     </script>
+    <script>
+    window.timeslotsUrl = "{{ route('timeslots.all') }}";
+    window.remainingCountsUrl = "{{ route('remaining.counts') }}";
+    </script>
+
     <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
 
     @include('components.alert-message')

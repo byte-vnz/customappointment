@@ -57,7 +57,12 @@ class Appointment extends Controller
             ],
         ];
 
-        return view('index-content', ['time_intervals' => $this->_model_time_intervals->where('status', 1)->get(), 'departments' => Department::where('status', 1)->get(),'alerts' => $alerts ,'transtype' => TransactionType::where('id', 13)->get()]);
+        return view('index-content', [
+            'time_intervals' => $this->_model_time_intervals->where('status', 1)->get(), 
+            'departments' => Department::where('status', 1)->get(),
+            'alerts' => $alerts ,
+            'transtype' => TransactionType::where('id', 13)->get()
+        ]);
     }
 
     public function save(ValidateRequest $req)
@@ -366,10 +371,10 @@ class Appointment extends Controller
         $vald_date = ($time > strtotime('12:01 am')) ? 'tomorrow' : 'today';
 
         $req->validate([
-            //'adate' => ['required', 'date', 'after:'.$vald_date],
-            'atime' => ['required', 'exists:timeslot,timeslot'],
+            'adate' => ['required', 'date'],
+            'atime' => ['required', 'string'],
         ], [], [
-            //'adate' => 'date',
+            'adate' => 'date',
             'atime' => 'timeslot',
         ]);
 
@@ -407,16 +412,44 @@ class Appointment extends Controller
         $date = $request->input('sdate', date('Y-m-d'));
 
         $q = (new AppointmentTable)->showCount($date);
+        $r = (new AppointmentTable)->showCounttotal($date) ?? 0;
         $l =  TransactionType::where('id', 13)->get();
         
-        if ($request->ajax() || $request->wantsJson()) {
-            return response()->json(['count' => $q]);
-        }
+     if ($request->ajax() || $request->wantsJson()) {
+        return response()->json([
+            'count' => $q,
+            'total' => $r ?? 0,
+        ]);
+}
 
         return view('slotviewer', [
             'count' => $q,
             'date'  => $date,
-            'location' => $l
+            'location' => $l,
+            'total' => $r,
+        ]);
+    }
+
+        public function rmslotview(Request $request)
+    {
+        $date = $request->input('sdate', date('Y-m-d'));
+
+        $q = (new AppointmentTable)->showRemainingCount($date);
+        $r = (new AppointmentTable)->showCounttotal($date) ?? 0;
+        $l =  TransactionType::where('id', 13)->get();
+        
+     if ($request->ajax() || $request->wantsJson()) {
+        return response()->json([
+            'count' => $q,
+            'total' => $r ?? 0,
+        ]);
+}
+
+        return view('slotremainingviewer', [
+            'count' => $q,
+            'date'  => $date,
+            'location' => $l,
+            'total' => $r,
         ]);
     }
 
@@ -1146,4 +1179,63 @@ private function mondayCutOffSettings($request)
         // We're done
         return false;
     }
+
+ public function getTimeslots()
+    {
+        return TimeInterval::where('status', 1)->get(['tid', 'timeslot']);
+    }
+
+public function getRemainingCounts(Request $request)
+{
+    $date = $request->input('adate');
+
+    $settingValue = DB::table('settings')
+        ->where('setting_uuid', '3c682e35-7e06-4397-9bc5-de15bd8a872e')
+        ->value('value');
+
+    $remaining = DB::table('timeslot')
+        ->select(
+            'timeslot.tid',
+            'timeslot.timeslot',
+            DB::raw("GREATEST($settingValue - COUNT(appmstr.eid), 0) as Remaining")
+        )
+        ->leftJoin('appmstr', function ($join) use ($date) {
+            $join->on('timeslot.tid', '=', 'appmstr.timeslotid')
+                 ->whereDate('appmstr.adate', $date)
+                 ->where('appmstr.iscancel', 0)
+                 ->where('appmstr.transaction_type_id', 13);
+        })
+        ->where('timeslot.status', 1)
+        ->groupBy('timeslot.tid', 'timeslot.timeslot')
+        ->get();
+
+    return response()->json($remaining);
+}
+    
+    // public function getRemainingCounts(Request $request)
+    // {
+    //     $date = $request->input('adate');
+
+    //     $remaining = AppointmentTable::select(
+    //             'appmstr.timeslotid',
+    //             'appmstr.atime',
+    //             DB::raw("GREATEST(
+    //                 (
+    //                     SELECT `value` 
+    //                     FROM `settings` 
+    //                     WHERE `setting_uuid` = '3c682e35-7e06-4397-9bc5-de15bd8a872e'
+    //                     LIMIT 1
+    //                 ) - COUNT(*), 0
+    //             ) as Remaining")
+    //         )
+    //         ->join('timeslot', 'timeslot.tid', '=', 'appmstr.timeslotid')
+    //         ->whereDate('appmstr.adate', $date)
+    //         ->where('appmstr.iscancel', 0)
+    //         ->where('appmstr.transaction_type_id', 13)
+    //         ->where('timeslot.status', 1)
+    //         ->groupBy('appmstr.timeslotid', 'appmstr.atime')
+    //         ->get();
+
+    //     return response()->json($remaining);
+    // }
 }

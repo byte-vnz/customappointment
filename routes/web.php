@@ -25,6 +25,13 @@ Route::get('cancellation', 'Appointment@indexCancel');
 Route::get('qrverify', 'Appointment@indexdverify');
 //Route::get('slotviewer', 'Appointment@indexslotview');
 Route::get('/slotviewer', 'Appointment@lvslotview')->name('slotviewer');
+Route::get('/slotviewer2', 'Appointment@rmslotview')->name('slotviewer2');
+
+
+
+Route::get('/timeslots', [Appointment::class, 'getTimeslots'])->name('timeslots.all');
+Route::get('/remaining-counts', [Appointment::class, 'getRemainingCounts'])->name('remaining.counts');
+
 
 Route::post('search-info', 'Appointment@appointInfo');
 Route::post('cancel', 'Appointment@cancel');

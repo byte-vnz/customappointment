@@ -260,6 +260,7 @@
                                                     {{ trim(explode('-', $time->timeslot)[0]) }}</option>
                                                 @endforeach
                                             </select>
+                                            <span id="slot-remaining" class="ml-3 text-success font-weight-bold"></span>
                                             <div class="invalid-feedback text-center">Please provide a timeslot.</div>
                                             <div class="d-sm-block">
                                                 <small class="text-muted" id="timeslot-avail"
@@ -393,6 +394,24 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="remainingModal" tabindex="-1" role="dialog" aria-labelledby="remainingModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="remainingModalLabel">Remaining Slots</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ✅ Modal initialized correctly!
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
 document.getElementById("adate").addEventListener("change", function() {
@@ -406,6 +425,20 @@ document.getElementById("adate").addEventListener("change", function() {
     }
 });
 </script>
+
+<script>
+window.maxSettingValue = {
+    {
+        \
+        DB::table('settings') -
+            >
+            where('setting_uuid', '3c682e35-7e06-4397-9bc5-de15bd8a872e') -
+            >
+            value('value')
+    }
+};
+</script>
+
 
 
 

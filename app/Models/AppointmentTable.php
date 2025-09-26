@@ -428,8 +428,84 @@ class AppointmentTable extends Model
 
     public function showCount($date)
     {
-        $q = $this->selectRaw('( count(*)) as Total')->addSelect('timeslotid', 'atime')->whereDate('adate', $date)->where(['iscancel' => 0, 'transaction_type_id' => 13])->groupBy('timeslotid', 'atime')->get();
-        return $q;
+       // $q = $this->selectRaw('( count(*)) as Total')->addSelect('timeslotid', 'atime')->whereDate('adate', $date)->where(['iscancel' => 0, 'transaction_type_id' => 13])->groupBy('timeslotid', 'atime')->get();
+       
+       $q = $this->selectRaw('COUNT(*) as Total')
+            ->addSelect('appmstr.timeslotid', 'appmstr.atime')
+            ->join('timeslot', 'timeslot.tid', '=', 'appmstr.timeslotid')
+            ->whereDate('appmstr.adate', $date)
+            ->where([
+                'appmstr.iscancel' => 0,
+                'appmstr.transaction_type_id' => 13,
+            ])
+            ->where('timeslot.status', 1)
+            ->groupBy('appmstr.timeslotid', 'appmstr.atime')
+            ->get();
+
+       return $q;
+    }
+
+
+    public function showRemainingCount($date)
+        {
+            $settingValue = \DB::table('settings')
+                ->where('setting_uuid', '3c682e35-7e06-4397-9bc5-de15bd8a872e')
+                ->value('value');
+
+            return $this->select('appmstr.timeslotid', 'appmstr.atime')
+                ->selectRaw('COUNT(*) - ? as Remaining', [$settingValue])
+                ->join('timeslot', 'timeslot.tid', '=', 'appmstr.timeslotid')
+                ->whereDate('appmstr.adate', $date)
+                ->where('appmstr.iscancel', 0)
+                ->where('appmstr.transaction_type_id', 13)
+                ->where('timeslot.status', 1)
+                ->groupBy('appmstr.timeslotid', 'appmstr.atime')
+                ->get();
+        }
+
+        public function showRemainingCounts($date)
+        {
+            return $this->select('appmstr.timeslotid', 'appmstr.atime')
+                ->selectRaw("
+                    GREATEST(
+                        (
+                            SELECT `value` 
+                            FROM `settings` 
+                            WHERE `setting_uuid` = '3c682e35-7e06-4397-9bc5-de15bd8a872e'
+                            LIMIT 1
+                        ) - COUNT(*), 0
+                    ) as Remaining
+                ")
+                ->join('timeslot', 'timeslot.tid', '=', 'appmstr.timeslotid')
+                ->whereDate('appmstr.adate', $date)
+                ->where('appmstr.iscancel', 0)
+                ->where('appmstr.transaction_type_id', 13)
+                ->where('timeslot.status', 1)
+                ->groupBy('appmstr.timeslotid', 'appmstr.atime')
+                ->get();
+        }
+
+
+
+      public function showCounttotal($date) 
+    {
+    // Subquery: grouped counts
+    $sub = DB::table('appmstr')
+        ->join('timeslot', 'timeslot.tid', '=', 'appmstr.timeslotid')
+        ->whereDate('appmstr.adate', $date)
+        ->where('appmstr.iscancel', 0)
+        ->where('appmstr.transaction_type_id', 13)
+        ->where('timeslot.status', 1)
+        ->selectRaw('COUNT(*) as cnt')
+        ->groupBy('appmstr.timeslotid', 'appmstr.atime');
+
+    // Outer query: sum of grouped counts
+    $r = DB::table(DB::raw("({$sub->toSql()}) as sub"))
+        ->mergeBindings($sub) // keep bindings like $date
+        ->selectRaw('SUM(cnt) as Total')
+        ->value('Total');
+
+    return $r; // 
     }
 
     /**

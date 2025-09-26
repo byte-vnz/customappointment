@@ -78,6 +78,9 @@ const pull_slots = (date, time) => {
 
 }
 
+
+
+
 const pullWalkInAvaiableSlots = (departmentid, transaction_type_id, bin, adate, atime) => {
     const loader = $('#appoint-spiner');
 
@@ -797,6 +800,154 @@ $(document).ready(function(e) {
     });
 });
 
+
+
+function loadTimeslots() {
+    $.ajax({
+        url: window.timeslotsUrl,
+        type: 'GET',
+        success: function(response) {
+            let $atime = $('#atime');
+            $atime.empty();
+
+            $.each(response, function(i, item) {
+                let displayTime = item.timeslot.split('-')[0].trim();
+                $atime.append(
+                    `<option value="${displayTime}">${displayTime}</option>`
+                );
+            });
+
+            $atime.trigger('change');
+        },
+        error: function() {
+            console.error("Failed to load timeslots");
+        }
+    });
+}
+
+let slotsData = {};
+
+$('#adate').on('change', function() {
+    let date = $(this).val();
+
+    if (!date) {
+        $('#slot-remaining').text('');
+        $('#atime').empty();
+        return;
+    }
+
+    $.ajax({
+        url: window.remainingCountsUrl,
+        type: 'GET',
+        data: { adate: date },
+        success: function(response) {
+            slotsData = {}; // reset
+            let $atime = $('#atime');
+            $atime.empty();
+
+            $.each(response, function(i, item) {
+                let fullTime = item.timeslot.trim(); // e.g. "10:00 AM - 11:00 AM"
+                let displayTime = fullTime.split('-')[0].trim(); // e.g. "10:00 AM"
+
+                // save remaining slots keyed by full timeslot
+                slotsData[fullTime] = item.Remaining;
+
+                // add option
+                $atime.append(
+                    `<option value="${fullTime}">${displayTime}</option>`
+                );
+            });
+
+            // trigger first option to update the span immediately
+            $atime.trigger('change');
+        },
+        error: function() {
+            console.error("Failed to fetch remaining counts");
+        }
+    });
+});
+
+$('#atime').on('change', function() {
+    let selectedTime = $(this).val(); // e.g. "10:00 AM - 11:00 AM"
+
+    if (slotsData[selectedTime] !== undefined) {
+        $('#slot-remaining').text(`(${slotsData[selectedTime]} slots left)`);
+    } else {
+        $('#slot-remaining').text(''); // clear if no data
+    }
+});
+
+loadTimeslots();
+
+/// MODAL
+// $('#adate').on('change', function() {
+//     let date = $(this).val();
+
+//     $.ajax({
+//         url: window.remainingCountsUrl,
+//         type: 'GET',
+//         data: { adate: date },
+//         success: function(response) {
+//             console.log(response);
+//             $('#remainingModal .modal-body').empty();
+
+//             if (response.length > 0) {
+//                 let html = '<table class="table table-bordered">';
+//                 html += '<thead><tr><th>Time</th><th>Remaining</th></tr></thead><tbody>';
+//                 $.each(response, function(i, item) {
+//                     html += '<tr><td>' + item.atime + '</td><td>' + item.Remaining + '</td></tr>';
+//                 });
+//                 html += '</tbody></table>';
+//                 $('#remainingModal .modal-body').html(html);
+//             } else {
+//                 $('#remainingModal .modal-body').html('<p class="text-muted">No slots found.</p>');
+//             }
+
+//             $('#remainingModal').modal('show');
+//         },
+//         error: function(xhr, status, error) {
+//             console.error("AJAX Error:", error);
+//             console.error("Response:", xhr.responseText);
+//             alert('Failed to fetch data.');
+//         }
+//     });
+// });
+
+// $('#adate').on('change', function () {
+//     let date = $(this).val();
+
+//     if (date) {
+//         $.ajax({
+//             url: "{{ route('remaining.counts') }}",
+//             type: 'GET',
+//             data: { adate: date },
+//             success: function (data) {
+//                 let tbody = $('#remainingTableBody');
+//                 tbody.empty();
+
+//                 if (data.length > 0) {
+//                     $.each(data, function (i, row) {
+//                         tbody.append(`
+//                             <tr>
+//                                 <td>${row.timeslotid}</td>
+//                                 <td>${row.atime}</td>
+//                                 <td>${row.Remaining}</td>
+//                             </tr>
+//                         `);
+//                     });
+//                 } else {
+//                     tbody.append(`<tr><td colspan="3" class="text-center">No data found</td></tr>`);
+//                 }
+
+//                 // Bootstrap 5 modal init
+//                 var modal = new bootstrap.Modal(document.getElementById('remainingModal'));
+//                 modal.show();
+//             }
+//         });
+//     }
+// });
+
+
 // Daterangepicker
 $('.use-daterangepicker').each(function() {
     $(this).daterangepicker();
@@ -805,34 +956,48 @@ $('.use-daterangepicker').each(function() {
 $('#sdate').on('change', function() {
     let date = $(this).val();
 
-    $.ajax({
+    // Keep a reference to the current AJAX call
+    if (window.currentRequest) {
+        window.currentRequest.abort(); // cancel the previous request
+    }
 
+    // Clear the list right away (optional: you can show "Loading...")
+    let list = $('#slot-list');
+    list.empty().append(`<li class="list-group-item">Loading...</li>`);
+
+    // New AJAX request
+    window.currentRequest = $.ajax({
         url: window.slotviewerUrl,
         type: 'GET',
         data: { sdate: date },
         dataType: 'json',
         success: function(data) {
-
-            let list = $('#slot-list');
-            list.empty();
+            list.empty(); // clear "Loading..."
 
             if (data.count.length > 0) {
                 $.each(data.count, function(index, detail) {
                     list.append(`
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                               <h4> ${detail.atime.split('-')[0].trim()}</h4>
-                                <span class="badge badge-primary badge-pill">
-                                   <h4> <strong>${detail.Total}</strong></h4>
-                                </span>
-                            </li>
-                        `);
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <h4>${detail.atime.split('-')[0].trim()}</h4>
+                            <span class="badge badge-primary badge-pill">
+                                <h4><strong>${detail.Total}</strong></h4>
+                            </span>
+                        </li>
+                    `);
                 });
+
             } else {
                 list.append(`<li class="list-group-item">No appointments found</li>`);
             }
+
+
+            let total = (data.total !== null && data.total !== undefined) ? data.total : 0;
+            $('#grand-total').text(total);
         },
         error: function(xhr, status, error) {
-            console.error('Error:', error);
+            if (status !== 'abort') { // ignore manual aborts
+                console.error('Error:', error);
+            }
         }
     });
 });
