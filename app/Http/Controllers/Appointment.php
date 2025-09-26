@@ -50,6 +50,10 @@ class Appointment extends Controller
 
     public function index()
     {
+        $maxSettingValue = \DB::table('settings')
+        ->where('setting_uuid', '3c682e35-7e06-4397-9bc5-de15bd8a872e')
+        ->value('value') ?? 0;
+
         $alerts = [
             24 => [
                 'content' => "<h4><b>REMINDER:</b></h4> This appointment registration is strictly for PWDs and Senior Citizens of Barangay <brgy name>. Those who are not part of these groups are advised to wait for further announcements regarding the HELP Card registration.",
@@ -61,7 +65,8 @@ class Appointment extends Controller
             'time_intervals' => $this->_model_time_intervals->where('status', 1)->get(), 
             'departments' => Department::where('status', 1)->get(),
             'alerts' => $alerts ,
-            'transtype' => TransactionType::where('id', 13)->get()
+            'transtype' => TransactionType::where('id', 13)->get(),
+            'maxSettingValue'  => $maxSettingValue,
         ]);
     }
 

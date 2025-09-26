@@ -245,7 +245,8 @@
                                             <div class="div-sm-100">
 
                                                 <input class="form-control" type="date" id="adate" name="adate"
-                                                    min="{{ $min_dt }}">
+                                                    min="{{ $min_dt }}"
+                                                    value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}">
                                                 <div class="invalid-feedback">Please provide a date.</div>
                                             </div>
                                         </div>
@@ -260,6 +261,7 @@
                                                     {{ trim(explode('-', $time->timeslot)[0]) }}</option>
                                                 @endforeach
                                             </select>
+
                                             <span id="slot-remaining" class="ml-3 text-success font-weight-bold"></span>
                                             <div class="invalid-feedback text-center">Please provide a timeslot.</div>
                                             <div class="d-sm-block">
@@ -426,18 +428,12 @@ document.getElementById("adate").addEventListener("change", function() {
 });
 </script>
 
+
 <script>
-window.maxSettingValue = {
-    {
-        \
-        DB::table('settings') -
-            >
-            where('setting_uuid', '3c682e35-7e06-4397-9bc5-de15bd8a872e') -
-            >
-            value('value')
-    }
-};
+window.maxSettingValue = @json($maxSettingValue);
 </script>
+
+
 
 
 

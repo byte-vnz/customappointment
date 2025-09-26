@@ -458,6 +458,7 @@ $(document).ready(function(e) {
                 $(a_box).removeClass('alert-success d-none').addClass('alert-danger').text(err_msg);
             }
 
+
         });
 
 
@@ -800,84 +801,64 @@ $(document).ready(function(e) {
     });
 });
 
-
-
-function loadTimeslots() {
-    $.ajax({
-        url: window.timeslotsUrl,
-        type: 'GET',
-        success: function(response) {
-            let $atime = $('#atime');
-            $atime.empty();
-
-            $.each(response, function(i, item) {
-                let displayTime = item.timeslot.split('-')[0].trim();
-                $atime.append(
-                    `<option value="${displayTime}">${displayTime}</option>`
-                );
-            });
-
-            $atime.trigger('change');
-        },
-        error: function() {
-            console.error("Failed to load timeslots");
-        }
-    });
-}
-
 let slotsData = {};
 
-$('#adate').on('change', function() {
-    let date = $(this).val();
-
-    if (!date) {
-        $('#slot-remaining').text('');
-        $('#atime').empty();
-        return;
-    }
-
+function loadTimeslots(date = null) {
     $.ajax({
         url: window.remainingCountsUrl,
         type: 'GET',
-        data: { adate: date },
+        data: date ? { adate: date } : {},
         success: function(response) {
             slotsData = {}; // reset
             let $atime = $('#atime');
             $atime.empty();
 
             $.each(response, function(i, item) {
-                let fullTime = item.timeslot.trim(); // e.g. "10:00 AM - 11:00 AM"
-                let displayTime = fullTime.split('-')[0].trim(); // e.g. "10:00 AM"
+                let fullTime = item.timeslot.trim(); // "10:00 AM - 11:00 AM"
+                let displayTime = fullTime.split('-')[0].trim(); // "10:00 AM"
 
-                // save remaining slots keyed by full timeslot
+                // store remaining count keyed by full range
                 slotsData[fullTime] = item.Remaining;
 
-                // add option
+                // build option
                 $atime.append(
                     `<option value="${fullTime}">${displayTime}</option>`
                 );
             });
 
-            // trigger first option to update the span immediately
+            // auto-trigger to update the span
             $atime.trigger('change');
         },
-        error: function() {
-            console.error("Failed to fetch remaining counts");
+        error: function(xhr) {
+            console.error("Failed to fetch timeslots:", xhr.responseText);
         }
     });
-});
+}
 
-$('#atime').on('change', function() {
-    let selectedTime = $(this).val(); // e.g. "10:00 AM - 11:00 AM"
-
-    if (slotsData[selectedTime] !== undefined) {
-        $('#slot-remaining').text(`(${slotsData[selectedTime]} slots left)`);
+// when date changes → reload slots
+$('#adate').on('change', function() {
+    let date = $(this).val();
+    if (date) {
+        loadTimeslots(date);
     } else {
-        $('#slot-remaining').text(''); // clear if no data
+        $('#slot-remaining').text('');
+        $('#atime').empty();
     }
 });
 
+// when time changes → update span
+$('#atime').on('change', function() {
+    let selectedTime = $(this).val(); // "10:00 AM - 11:00 AM"
+    if (slotsData[selectedTime] !== undefined) {
+        $('#slot-remaining').text(`(${slotsData[selectedTime]} slots left)`);
+    } else {
+        $('#slot-remaining').text('');
+    }
+});
+
+// run once on page load
 loadTimeslots();
+
 
 /// MODAL
 // $('#adate').on('change', function() {
