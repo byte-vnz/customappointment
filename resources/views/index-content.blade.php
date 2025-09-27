@@ -246,6 +246,7 @@
 
                                                 <input class="form-control" type="date" id="adate" name="adate"
                                                     min="{{ $min_dt }}">
+
                                                 <div class="invalid-feedback">Please provide a date.</div>
                                             </div>
                                         </div>
@@ -261,7 +262,8 @@
                                                 @endforeach
                                             </select>
 
-                                            <span id="slot-remaining" class="ml-3 text-success font-weight-bold"></span>
+                                            <span id="slot-remaining" class="ml-3 text-success font-weight-bold"
+                                                style="display:none;"></span>
                                             <div class="invalid-feedback text-center">Please provide a timeslot.</div>
                                             <div class="d-sm-block">
                                                 <small class="text-muted" id="timeslot-avail"

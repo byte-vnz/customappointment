@@ -817,7 +817,7 @@ function loadTimeslots(date = null) {
                 let fullTime = item.timeslot.trim(); // "10:00 AM - 11:00 AM"
                 let displayTime = fullTime.split('-')[0].trim(); // "10:00 AM"
 
-                // store remaining count keyed by full range
+                // store remaining count keyed by fullTime
                 slotsData[fullTime] = item.Remaining;
 
                 // build option
@@ -835,26 +835,63 @@ function loadTimeslots(date = null) {
     });
 }
 
-// when date changes → reload slots
 $('#adate').on('change', function() {
     let date = $(this).val();
-    if (date) {
-        loadTimeslots(date);
-    } else {
-        $('#slot-remaining').text('');
-        $('#atime').empty();
+
+    if (!date) {
+        $('#slot-remaining').text('').hide();
+        return;
     }
+
+    $.ajax({
+        url: window.remainingCountsUrl,
+        type: 'GET',
+        data: { adate: date },
+        success: function(response) {
+            slotsData = {}; // reset
+
+            $.each(response, function(i, item) {
+                let fullTime = item.timeslot.trim();
+                slotsData[fullTime] = item.Remaining; // ✅ use fullTime as key
+            });
+
+            $('#atime').trigger('change');
+        }
+    });
 });
 
-// when time changes → update span
 $('#atime').on('change', function() {
-    let selectedTime = $(this).val(); // "10:00 AM - 11:00 AM"
-    if (slotsData[selectedTime] !== undefined) {
-        $('#slot-remaining').text(`(${slotsData[selectedTime]} slots left)`);
+    let selectedTime = $(this).val();
+    let date = $('#adate').val();
+
+    if (date && slotsData[selectedTime] !== undefined) {
+        $('#slot-remaining')
+            .text(`(${slotsData[selectedTime]} slots left)`)
+            .show();
     } else {
-        $('#slot-remaining').text('');
+        $('#slot-remaining').text('').hide();
     }
 });
+// when date changes → reload slots
+// $('#adate').on('change', function() {
+//     let date = $(this).val();
+//     if (date) {
+//         loadTimeslots(date);
+//     } else {
+//         $('#slot-remaining').text('');
+//         $('#atime').empty();
+//     }
+// });
+
+// // when time changes → update span
+// $('#atime').on('change', function() {
+//     let selectedTime = $(this).val(); // "10:00 AM - 11:00 AM"
+//     if (slotsData[selectedTime] !== undefined) {
+//         $('#slot-remaining').text(`(${slotsData[selectedTime]} slots left)`);
+//     } else {
+//         $('#slot-remaining').text('');
+//     }
+// });
 
 // run once on page load
 loadTimeslots();
