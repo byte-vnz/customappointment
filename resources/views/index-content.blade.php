@@ -245,8 +245,7 @@
                                             <div class="div-sm-100">
 
                                                 <input class="form-control" type="date" id="adate" name="adate"
-                                                    min="{{ $min_dt }}"
-                                                    value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}">
+                                                    min="{{ $min_dt }}">
                                                 <div class="invalid-feedback">Please provide a date.</div>
                                             </div>
                                         </div>
