@@ -64,7 +64,7 @@
     window.remainingCountsUrl = "{{ route('remaining.counts') }}";
     </script>
 
-    <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+    <script type="text/javascript" src=" {{ asset('js/app.js') }}?v={{ time() }}"></script>
 
     @include('components.alert-message')
 </body>

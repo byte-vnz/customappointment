@@ -434,7 +434,14 @@ document.getElementById("adate").addEventListener("change", function() {
 window.maxSettingValue = @json($maxSettingValue);
 </script>
 
-
+<script>
+window.onload = function() {
+    if (localStorage.getItem("cacheCleared") !== "yes") {
+        localStorage.setItem("cacheCleared", "yes");
+        location.reload(true); // force reload bypassing cache
+    }
+}
+</script>
 
 
 

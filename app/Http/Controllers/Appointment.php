@@ -89,12 +89,12 @@ class Appointment extends Controller
          }
 
                //  Check  cut off
-         if ($req->departmentid == 24 && $req->transaction_type_id==20) {
+         if ($req->departmentid == 24 ) {
              if (!$this->checkCutOffSettings($req)) {
                  $response_m = [
                      'error' => true,
                      
-                      'message' => "<b>Sorry,</b> Registraion is already close.",
+                      'message' => "<b>Sorry,</b> Registraion is already closed.",
                      'slot_message' => "",
                  ];
 
@@ -1094,8 +1094,8 @@ class Appointment extends Controller
 
          // ✅ If month >= 9 and day >= 19, block (Sept 19 onwards)
     if (
-        $requestSchedDate->month > 9 || 
-        ($requestSchedDate->month == 9 && $requestSchedDate->day >= 19)
+        $requestSchedDate->month > 11 || 
+        ($requestSchedDate->month == 11 && $requestSchedDate->day >= 1)
     ) {
         return false;
     }
