@@ -46,7 +46,7 @@ Route::get('/download/{filename}', function ($filename) {
 
 
 // Walk-In Appointment
-Route::group(['prefix' => '/30c234cc35caba164c8dbd3837a0c55a'], function () {
+Route::group(['prefix' => '/walkinslot'], function () {
     Route::get('/', 'AppointmentWalkInController@index')->name('appointment.walk-in.index');
     Route::post('/', 'AppointmentWalkInController@create')->name('appointment.walk-in.create');
     Route::get('/{refno}', 'AppointmentWalkInController@viewAppointment')->name('appointment.walk-in.view');
