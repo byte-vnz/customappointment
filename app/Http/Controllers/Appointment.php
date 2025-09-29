@@ -1094,8 +1094,8 @@ class Appointment extends Controller
 
          // ✅ If month >= 9 and day >= 19, block (Sept 19 onwards)
     if (
-        $requestSchedDate->month > 11 || 
-        ($requestSchedDate->month == 11 && $requestSchedDate->day >= 1)
+        $requestSchedDate->month > 10 || 
+        ($requestSchedDate->month == 10 && $requestSchedDate->day >= 31)
     ) {
         return false;
     }
