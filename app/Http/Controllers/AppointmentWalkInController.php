@@ -80,7 +80,7 @@ class AppointmentWalkInController extends Controller
             if ($request->transaction_type_id == 1) {
                 // Check if valid appointment
                 if (!$this->getConfigBinSchedKey($request->bin, $request->adate)) {
-//<br>Allowed BIN ending for extension <br><br>1-2 January 23 - January 29 <br>3-4 January 30 - Feburary 5 <br>5-6 Feburary 6 - Feburary 12 <br>7-8 Feburary 13 - Feburary 19 <br>9-0 Feburary 20 - Feburary 26 <br>
+                //<br>Allowed BIN ending for extension <br><br>1-2 January 23 - January 29 <br>3-4 January 30 - Feburary 5 <br>5-6 Feburary 6 - Feburary 12 <br>7-8 Feburary 13 - Feburary 19 <br>9-0 Feburary 20 - Feburary 26 <br>
                     session()->flash('error', '<b>Sorry,</b> the date you selected for the appointment does not fall on the scheduled extension for your BIN.');
                     return back()->withInput($request->except('_token'));
                 }
@@ -100,10 +100,10 @@ class AppointmentWalkInController extends Controller
         $ownerUuid = $this->getConfigOwnerUuid();
 
         // Check for available slots
-        if ($availableSlots <= 0) {
-            session()->flash('error', '<b>Sorry.</b> There is no available slots for the requested schedule.');
-            return back()->withInput($request->except('_token'));
-        }
+        // if ($availableSlots <= 0) {
+        //     session()->flash('error', '<b>Sorry.</b> There is no available slots for the requested schedule.');
+        //     return back()->withInput($request->except('_token'));
+        // }
 
         // Create appointment
         $createAppointment = AppointmentTable::create(array_merge($request->except('_token'), [
@@ -351,6 +351,10 @@ class AppointmentWalkInController extends Controller
                     ->count();
                 $availableSlots = (int)$configSlots - (int)$reserveSlots;
                 break;
+
+
+
+
             case Setting::KEYS['helpcard_walkin_site1']:
                 $configSlots = SettingHelper::get(Setting::KEYS['helpcard_walkin_site1']);
                 $reserveSlots = AppointmentTable::HelpcardWalkinSettings()
