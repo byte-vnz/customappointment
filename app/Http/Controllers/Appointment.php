@@ -123,7 +123,8 @@ class Appointment extends Controller
             if (!$this->checkWeekendSettings($req, $requestSchedDate->dayOfWeek)) {
                 $response_m = [
                     'error' => true,
-                    'message' => "<b>Sorry,</b> the date and time you selected for the Appointment is not available.",
+                    //'message' => "<b>Sorry,</b> the date and time you selected for the Appointment is not available.",
+                    'message' => "<b>Sorry,</b> there are no weekend schedule for barangays.", 
                     'slot_message' => "",
                 ];
 

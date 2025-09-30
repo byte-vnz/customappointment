@@ -416,18 +416,6 @@
 </div>
 
 
-<script>
-document.getElementById("adate").addEventListener("change", function() {
-    const date = new Date(this.value + "T00:00:00"); // safe parsing
-    const day = date.getDay(); // Sunday = 0, Saturday = 6
-
-    if (day === 0) { // only block Sundays
-        alert("Sundays are not allowed. Please select another day.");
-        this.value = ""; // reset the field
-        this.focus();
-    }
-});
-</script>
 
 
 <script>
