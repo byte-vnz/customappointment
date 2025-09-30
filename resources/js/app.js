@@ -247,6 +247,8 @@ $(document).ready(function(e) {
 
                         $('#as-modal').modal('show');
                         $('#master-form')[0].reset();
+                        $('#slot-remaining').addClass('d-none');
+
                     }
                 },
                 'error': (err) => {
@@ -854,7 +856,7 @@ $('#adate').on('change', function() {
                 let fullTime = item.timeslot.trim();
                 slotsData[fullTime] = item.Remaining; // ✅ use fullTime as key
             });
-
+            $('#slot-remaining').removeClass('d-none');
             $('#atime').trigger('change');
         }
     });

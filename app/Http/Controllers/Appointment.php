@@ -93,8 +93,7 @@ class Appointment extends Controller
              if (!$this->checkCutOffSettings($req)) {
                  $response_m = [
                      'error' => true,
-                     
-                      'message' => "<b>Sorry,</b> Registraion is already closed.",
+                    'message' => "<b>Sorry,</b> Registration is already closed.",
                      'slot_message' => "",
                  ];
 
