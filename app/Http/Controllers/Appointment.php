@@ -551,8 +551,7 @@ class Appointment extends Controller
     {
         // Get the appointment data
         $appointment = AppointmentTable::where('refno', $refno)->orWhere('bin', $refno)->orderBy('eid', 'DESC')-> first();
-
-
+       
         if (!$appointment) {
             return view('verificationnf');
         }
@@ -576,12 +575,20 @@ class Appointment extends Controller
             // On Schedule
             $scheduleIndicator = 'bg-success';
         }
+             $isaccepted = false;
+        if ($appointment->appstatus == 4) {
+                $isaccepted = true;
+            } else {
+                $isaccepted = false;
+            }
+        
+
 
         // Green for on time sched. Red for expired sched.
         //$scheduleIndicator = ($currentDateTime->gt(Carbon::parse($endTime))) ? 'bg-danger' : 'bg-success';
 
         // We're done
-        return view('verification', compact('appointment', 'scheduleIndicator', 'isExpire'));
+        return view('verification', compact('appointment', 'scheduleIndicator', 'isExpire' , 'isaccepted'));
     }
 
     /**

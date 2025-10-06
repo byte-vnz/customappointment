@@ -150,21 +150,47 @@ const pullWalkInAvaiableSlots = (departmentid, transaction_type_id, bin, adate, 
 
 $(document).ready(function(e) {
 
-    $('body').on('change', '#atime', function(e) {
-        let date_val = $('#adate').val(),
-            time_val = $(this).val();
+    var inputDate = $('#adate');
 
-        pull_slots(date_val, time_val);
+    // Dynamically set the min date for the input field
+    var today = new Date();
+    var minDate = today.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    inputDate.attr('min', minDate); // Set the min attribute to today
 
+    // Disable Sundays on input or change event
+    inputDate.on('input change', function() {
+        var selectedDate = new Date(inputDate.val()); // Get selected date
+        var dayOfWeek = selectedDate.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+
+        // Check if the selected date is a Sunday
+        if (dayOfWeek === 0) {
+            inputDate.val(''); // Clear the input
+
+            // SweetAlert for Sunday validation message
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Sundays are not allowed. Please select a different date.',
+                confirmButtonText: 'Okay'
+            });
+        }
     });
 
-    $('body').on('input', '#adate', function(e) {
-        let date_val = $(this).val(),
-            time_val = $('#atime').val();
+    // $('body').on('change', '#atime', function(e) {
+    //     let date_val = $('#adate').val(),
+    //         time_val = $(this).val();
 
-        pull_slots(date_val, time_val);
+    //     pull_slots(date_val, time_val);
 
-    });
+    // });
+
+    // $('body').on('input', '#adate', function(e) {
+    //     let date_val = $(this).val(),
+    //         time_val = $('#atime').val();
+
+    //     pull_slots(date_val, time_val);
+
+    // });
 
     $('body').on('submit', '#master-form', function(e) {
         e.preventDefault();
@@ -178,25 +204,8 @@ $(document).ready(function(e) {
         form.removeClass('was-validated');
         $('.form-control').removeClass('is-invalid');
 
-        // if (dept_val > 0) {
-
-        //     if (transact_val != 8 || transact_val != 16) { // NEW
-        //         let bin_max_length = 10,
-        //             bin_length = $('#bin').val().trim().length;
-
-        //         if (bin_length > bin_max_length) {
-        //             $('#bin').addClass('is-invalid').parent().find('.invalid-feedback').text('BIN should be ten(10) characters.');
-        //             return false;
-        //         }
-
-        //     }
-
-        // }
-
-
         if (form[0].checkValidity() == false) {
             form.addClass('was-validated');
-
         } else {
             let a_box = $('#alert-box-form'),
                 sub_btn = $('#btn-submit-appointment'),
@@ -214,23 +223,32 @@ $(document).ready(function(e) {
                     a_box.addClass('d-none');
                     loader.removeClass('d-none');
                     sub_btn.attr('disabled', true);
-
                 },
                 'complete': () => {
                     loader.addClass('d-none');
                     sub_btn.attr('disabled', false);
-
                 },
                 'success': (data) => {
-                    const {
-                        message,
-                        slot_message
-                    } = data;
+                    const { message, slot_message } = data;
 
                     if (data.error) {
                         a_box.removeClass('alert-success d-none').addClass('alert-danger').html(message);
                         $('#timeslot-avail').text(slot_message);
                         $(window).scrollTop(0);
+
+                        // Show SweetAlert for error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            html: message,
+                            confirmButtonText: 'Okay'
+                        });
+
+
+                        $('#adate').val('');
+                        $('#atime').val('');
+                        $('#slot-remaining').addClass('d-none');
+
                     } else {
                         a_box.removeClass('alert-danger d-none').addClass('alert-success').html(message);
                         $('#timeslot-avail').text(slot_message);
@@ -238,10 +256,7 @@ $(document).ready(function(e) {
                         $('.aptrefno').text(data.ref_no);
                         $('.aptadate').text(data.adate);
                         $('.aptatime').text(data.atime.split('-')[0].trim());
-                        // $('.aptatime').text(data.atime);
                         $('.apttrans').text(data.trans);
-                        //$('.aptbusname').text(data.bus_name);
-                        //$('.aptbin').text(data.bin);
                         $('.apteid').text(data.eid);
                         $("#modal-qr-img").attr('src', data.qr_url);
 
@@ -249,6 +264,13 @@ $(document).ready(function(e) {
                         $('#master-form')[0].reset();
                         $('#slot-remaining').addClass('d-none');
 
+                        // Show SweetAlert for success
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            html: message,
+                            confirmButtonText: 'Okay'
+                        });
                     }
                 },
                 'error': (err) => {
@@ -261,12 +283,8 @@ $(document).ready(function(e) {
 
                             err_msg = err_json.message;
 
-                            // console.log(err_data);
-
                             for (var _key in err_data) {
-
                                 $('#' + _key).addClass('is-invalid').parent().find('.invalid-feedback').text(err_data[_key][0]);
-
                             }
 
                             let first_err_arr = Object.keys(err_data)[0];
@@ -275,12 +293,9 @@ $(document).ready(function(e) {
                                 let err_split = first_err_arr.split('.');
 
                                 $('.' + err_split[0]).eq(err_split[1]).focus();
-
                             } else {
                                 $('#' + Object.keys(err_data)[0]).focus();
-
                             }
-
                             break;
 
                         case 404:
@@ -292,14 +307,15 @@ $(document).ready(function(e) {
                             break;
                     }
 
-                    $(a_box).removeClass('alert-success d-none').addClass('alert-danger').text(err_msg);
-                    $(window).scrollTop(0);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        html: err_msg,
+                        confirmButtonText: 'Okay'
+                    });
                 }
-
             });
-
         }
-
     });
 
 
@@ -473,7 +489,11 @@ $(document).ready(function(e) {
         let ref_val = $('#reference_codes').val(); // <-- make sure your input has this ID
 
         if (!ref_val) {
-            alert("Reference code is required");
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Reference code is required!',
+            });
             return;
         }
 
@@ -485,18 +505,27 @@ $(document).ready(function(e) {
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             success: function(data) {
-                alert(data.message);
-
-                if (!data.error) {
-                    window.location.href = slotViewerUrl; // ✅ this will now be correct
-                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: data.message,
+                }).then(() => {
+                    // Redirect after user presses "OK" in the SweetAlert
+                    if (!data.error) {
+                        window.location.href = slotViewerUrl; // ✅ this will now be correct
+                    }
+                });
             },
             error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'AJAX Error',
+                    text: xhr.responseText,
+                });
                 console.error("❌ AJAX Error:", xhr.responseText);
             }
         });
     });
-
     // submit end accept
 
 
@@ -874,6 +903,12 @@ $('#atime').on('change', function() {
         $('#slot-remaining').text('').hide();
     }
 });
+loadTimeslots();
+
+
+
+
+
 // when date changes → reload slots
 // $('#adate').on('change', function() {
 //     let date = $(this).val();
@@ -896,7 +931,7 @@ $('#atime').on('change', function() {
 // });
 
 // run once on page load
-loadTimeslots();
+
 
 
 /// MODAL

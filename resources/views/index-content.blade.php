@@ -234,13 +234,7 @@
                                         <div class="form-inline d-flex justify-content-md-center">
                                             <label for="adate" class="mr-4 labelhld" id="adate-label">DATE</label>
                                             @php
-
-
-
-
                                             $min_dt = date('Y-m-d');
-
-
                                             @endphp
                                             <div class="div-sm-100">
 
@@ -417,7 +411,9 @@
 
 
 
+<script>
 
+</script>
 <script>
 window.maxSettingValue = @json($maxSettingValue);
 </script>
@@ -430,6 +426,7 @@ window.onload = function() {
     }
 }
 </script>
+
 
 
 

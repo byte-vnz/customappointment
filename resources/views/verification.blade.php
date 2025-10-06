@@ -85,18 +85,27 @@
                             <h5 class="card-title">{{ trim(explode('-', $appointment->atime)[0]) }}</h5>
                         </div>
                     </div>
-
                     <div class="card-footer text-muted mb-2">
                         @if($isExpire)
+
+
                         <div class="row text-center">
                             <div class="col-md-12 col-12 text-danger text-center">YOUR SCHEDULE IS ALREADY CANCELLED OR
                                 EXPIRED</div>
                         </div>
+
+
                         @endif
+
+                        @if(!$isaccepted)
+                        <button type="button" class="btn btn-success" id="submit-accept">Accept</button>
+                        @else
+                        <div class="col-md-12 col-12 text-danger text-center"><b>THIS APPOINTMENT IS ALREADY
+                                ACCEPTED</B>
+                        </div>
+                        @endif
+
                     </div>
-
-                    <button type="button" class="btn btn-success" id="submit-accept">Accept</button>
-
 
                 </div>
 
